@@ -12,6 +12,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const entries = [
   { name: 'background', entry: 'src/background/index.ts', format: 'es' },
   { name: 'content-chatgpt', entry: 'src/content/chatgpt.ts', format: 'iife' },
+  { name: 'content-claude', entry: 'src/content/claude.ts', format: 'iife' },
 ]
 
 for (const { name, entry, format } of entries) {

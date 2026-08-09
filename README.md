@@ -1,7 +1,7 @@
 # AI Conversation Organizer
 
-Extension Firefox local-first pour organiser des conversations ChatGPT (puis Claude/Gemini) dans
-un workspace personnel — dossiers, tags, favoris, recherche — indépendant du provider, du
+Extension Firefox local-first pour organiser des conversations ChatGPT et Claude (Gemini à venir)
+dans un workspace personnel — dossiers, tags, favoris, recherche — indépendant du provider, du
 navigateur ou de l'OS.
 
 ## Principe
@@ -21,14 +21,14 @@ que `provider`, `externalId`, `url`, et un `title` best-effort (jamais critique)
 
 ## Permissions Firefox (`public/manifest.json`)
 
-| Permission                                       | Raison                                                                                                                                                                           |
-| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `storage`                                        | Persister la session Supabase Auth via `browser.storage.local` (opt-in, cloud sync uniquement).                                                                                  |
-| `alarms`                                         | Déclencher le cycle de synchronisation en arrière-plan à intervalle raisonnable, sans polling agressif.                                                                          |
-| `host_permissions: chatgpt.com, chat.openai.com` | Domaines du seul provider supporté au MVP, pour l'injection du content script de détection. Étendu uniquement quand un provider est réellement implémenté — jamais `<all_urls>`. |
+| Permission                                                  | Raison                                                                                                                                                             |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `storage`                                                   | Persister la session Supabase Auth via `browser.storage.local` (opt-in, cloud sync uniquement).                                                                    |
+| `alarms`                                                    | Déclencher le cycle de synchronisation en arrière-plan à intervalle raisonnable, sans polling agressif.                                                            |
+| `host_permissions: chatgpt.com, chat.openai.com, claude.ai` | Domaines des providers réellement implémentés, pour l'injection des content scripts de détection. Étendu uniquement quand un provider l'est — jamais `<all_urls>`. |
 
-Le content script (`src/content/chatgpt.ts`) lit uniquement l'URL courante et, en best-effort, un
-sélecteur DOM pour le titre — jamais le contenu des messages.
+Les content scripts (`src/content/chatgpt.ts`, `src/content/claude.ts`) lisent uniquement l'URL
+courante et, en best-effort, un sélecteur DOM pour le titre — jamais le contenu des messages.
 
 ## Scripts
 
