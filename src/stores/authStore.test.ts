@@ -46,7 +46,10 @@ describe('useAuthStore', () => {
 
     await useAuthStore.getState().signIn('franck@example.com', 'wrong-password')
 
-    expect(useAuthStore.getState()).toMatchObject({ status: 'signed-out', error: 'Invalid credentials' })
+    expect(useAuthStore.getState()).toMatchObject({
+      status: 'signed-out',
+      error: 'Invalid credentials',
+    })
   })
 
   it('clears the session on sign-out', async () => {

@@ -15,7 +15,13 @@ const ENTITY_TABLE: Record<MutationEntity, string> = {
   conversationLink: 'conversation_links',
 }
 
-const PULLABLE_ENTITIES = ['workspace', 'folder', 'conversation', 'tag', 'conversationLink'] as const
+const PULLABLE_ENTITIES = [
+  'workspace',
+  'folder',
+  'conversation',
+  'tag',
+  'conversationLink',
+] as const
 
 async function pushOne(client: SyncClient, mutation: QueuedMutation): Promise<void> {
   const table = ENTITY_TABLE[mutation.entity]
@@ -93,7 +99,10 @@ async function setCursor(entity: MutationEntity, cursor: string): Promise<void> 
 }
 
 async function upsertIfNewer<T extends { id: string; updatedAt: string }>(
-  table: { get(id: string): Promise<(T & SyncMeta) | undefined>; put(row: T & SyncMeta): Promise<unknown> },
+  table: {
+    get(id: string): Promise<(T & SyncMeta) | undefined>
+    put(row: T & SyncMeta): Promise<unknown>
+  },
   remote: T,
 ): Promise<void> {
   const local = await table.get(remote.id)
@@ -101,7 +110,10 @@ async function upsertIfNewer<T extends { id: string; updatedAt: string }>(
   await table.put({ ...remote, syncStatus: 'synced', localUpdatedAt: Date.now() })
 }
 
-async function mergeRemoteRow(entity: (typeof PULLABLE_ENTITIES)[number], row: Record<string, unknown>) {
+async function mergeRemoteRow(
+  entity: (typeof PULLABLE_ENTITIES)[number],
+  row: Record<string, unknown>,
+) {
   const camel = toCamelCaseRow(row)
   switch (entity) {
     case 'workspace':
@@ -117,7 +129,10 @@ async function mergeRemoteRow(entity: (typeof PULLABLE_ENTITIES)[number], row: R
   }
 }
 
-async function pullEntity(client: SyncClient, entity: (typeof PULLABLE_ENTITIES)[number]): Promise<void> {
+async function pullEntity(
+  client: SyncClient,
+  entity: (typeof PULLABLE_ENTITIES)[number],
+): Promise<void> {
   const table = ENTITY_TABLE[entity]
   const cursor = await getCursor(entity)
   const { data, error } = await client.selectUpdatedSince(table, 'updated_at', cursor)

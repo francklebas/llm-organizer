@@ -5,7 +5,14 @@ import type { Tag } from '../../domain/types'
 
 export async function createTag(workspaceId: string, name: string): Promise<Tag> {
   const now = new Date().toISOString()
-  const tag: Tag = { id: generateId(), workspaceId, name, deletedAt: null, createdAt: now, updatedAt: now }
+  const tag: Tag = {
+    id: generateId(),
+    workspaceId,
+    name,
+    deletedAt: null,
+    createdAt: now,
+    updatedAt: now,
+  }
 
   await db.transaction('rw', db.tags, db.mutationQueue, async () => {
     await db.tags.add({ ...tag, syncStatus: 'pending', localUpdatedAt: Date.now() })
@@ -65,4 +72,27 @@ export async function removeTagFromConversation(
 
 export function listTagsForConversation(conversationId: string) {
   return db.conversationTags.where('conversationId').equals(conversationId).toArray()
+}
+
+/** Tag names per conversation, for local search — one batched read instead of N+1 per row. */
+export async function listConversationTagNames(
+  conversationIds: string[],
+): Promise<Map<string, string[]>> {
+  if (conversationIds.length === 0) return new Map()
+
+  const [links, tags] = await Promise.all([
+    db.conversationTags.where('conversationId').anyOf(conversationIds).toArray(),
+    db.tags.toArray(),
+  ])
+  const nameById = new Map(tags.map((tag) => [tag.id, tag.name]))
+
+  const result = new Map<string, string[]>()
+  for (const link of links) {
+    const name = nameById.get(link.tagId)
+    if (!name) continue
+    const names = result.get(link.conversationId) ?? []
+    names.push(name)
+    result.set(link.conversationId, names)
+  }
+  return result
 }

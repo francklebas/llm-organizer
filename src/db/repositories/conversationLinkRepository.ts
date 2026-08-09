@@ -52,3 +52,11 @@ export function listLinksForConversation(conversationId: string): Promise<Conver
     .filter((link) => link.deletedAt === null)
     .toArray()
 }
+
+export function listConversationLinksByWorkspace(workspaceId: string): Promise<ConversationLink[]> {
+  return db.conversationLinks
+    .where('workspaceId')
+    .equals(workspaceId)
+    .filter((link) => link.deletedAt === null)
+    .toArray()
+}

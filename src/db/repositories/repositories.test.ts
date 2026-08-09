@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { db } from '../dexie'
-import { createWorkspace, listWorkspaces, softDeleteWorkspace } from './workspaceRepository'
+import {
+  createWorkspace,
+  getOrCreateDefaultWorkspace,
+  listWorkspaces,
+  softDeleteWorkspace,
+} from './workspaceRepository'
 import { createFolder, listFoldersByWorkspace, moveFolder } from './folderRepository'
 import {
   listConversationsByWorkspace,
@@ -27,6 +32,17 @@ describe('workspaceRepository', () => {
 
     await softDeleteWorkspace(workspace.id)
     expect(await listWorkspaces()).toEqual([])
+  })
+
+  it('getOrCreateDefaultWorkspace is idempotent under concurrent calls (React StrictMode)', async () => {
+    const [a, b, c] = await Promise.all([
+      getOrCreateDefaultWorkspace(),
+      getOrCreateDefaultWorkspace(),
+      getOrCreateDefaultWorkspace(),
+    ])
+    expect(a.id).toBe(b.id)
+    expect(b.id).toBe(c.id)
+    expect(await listWorkspaces()).toHaveLength(1)
   })
 })
 
@@ -108,6 +124,8 @@ describe('tagRepository', () => {
 
     await addTagToConversation(conversation.id, tag.id)
     const links = await listTagsForConversation(conversation.id)
-    expect(links).toEqual([expect.objectContaining({ conversationId: conversation.id, tagId: tag.id })])
+    expect(links).toEqual([
+      expect.objectContaining({ conversationId: conversation.id, tagId: tag.id }),
+    ])
   })
 })

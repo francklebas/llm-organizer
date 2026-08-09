@@ -21,12 +21,7 @@ export type LocalConversationTag = ConversationTag & { syncStatus: SyncMeta['syn
 export type LocalConversationLink = ConversationLink & SyncMeta
 
 export type MutationEntity =
-  | 'workspace'
-  | 'folder'
-  | 'conversation'
-  | 'tag'
-  | 'conversationTag'
-  | 'conversationLink'
+  'workspace' | 'folder' | 'conversation' | 'tag' | 'conversationTag' | 'conversationLink'
 
 export type MutationOp = 'insert' | 'update' | 'delete'
 

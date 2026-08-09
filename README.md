@@ -21,10 +21,10 @@ que `provider`, `externalId`, `url`, et un `title` best-effort (jamais critique)
 
 ## Permissions Firefox (`public/manifest.json`)
 
-| Permission | Raison |
-|---|---|
-| `storage` | Persister la session Supabase Auth via `browser.storage.local` (opt-in, cloud sync uniquement). |
-| `alarms` | Déclencher le cycle de synchronisation en arrière-plan à intervalle raisonnable, sans polling agressif. |
+| Permission                                       | Raison                                                                                                                                                                           |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `storage`                                        | Persister la session Supabase Auth via `browser.storage.local` (opt-in, cloud sync uniquement).                                                                                  |
+| `alarms`                                         | Déclencher le cycle de synchronisation en arrière-plan à intervalle raisonnable, sans polling agressif.                                                                          |
 | `host_permissions: chatgpt.com, chat.openai.com` | Domaines du seul provider supporté au MVP, pour l'injection du content script de détection. Étendu uniquement quand un provider est réellement implémenté — jamais `<all_urls>`. |
 
 Le content script (`src/content/chatgpt.ts`) lit uniquement l'URL courante et, en best-effort, un

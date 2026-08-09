@@ -7,9 +7,7 @@ import { createSupabaseAuthClient } from '../supabase/supabaseAuthClient'
 import { useAuthStore } from '../stores/authStore'
 
 const supabase = getSupabaseClient()
-void useAuthStore
-  .getState()
-  .initialize(supabase ? createSupabaseAuthClient(supabase) : null)
+void useAuthStore.getState().initialize(supabase ? createSupabaseAuthClient(supabase) : null)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
